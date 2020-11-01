@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="timetrackingexam.gui.controller.EditProjectController">
+   <children>
+      <Label layoutX="165.0" layoutY="53.0" text="Name" />
+      <Label layoutX="405.0" layoutY="53.0" text="Client" />
+      <Label layoutX="169.0" layoutY="149.0" text="Rate" />
+      <JFXTextField fx:id="txtName" layoutX="114.0" layoutY="83.0" />
+      <JFXTextField fx:id="txtRate" layoutX="114.0" layoutY="187.0" />
+      <JFXComboBox fx:id="comboboxClient" layoutX="392.0" layoutY="83.0" />
+      <JFXButton layoutX="161.0" layoutY="282.0" onAction="#save" text="Save" />
+      <JFXButton layoutX="394.0" layoutY="282.0" onAction="#cancel" text="Cancel" />
+   </children>
+</AnchorPane>
