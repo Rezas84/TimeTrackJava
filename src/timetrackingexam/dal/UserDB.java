@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import timetrackingexam.be.LoggedUser;
 
 /**
  *
@@ -49,6 +50,8 @@ public class UserDB {
         try {
             int userId = -1;
             String sql = "INSERT INTO Person (name, email, access_level, password) VALUES (?,?,?,?)";
+            String sql2 = "INSERT INTO Log(user_id, action) VALUES(?,?)";
+
             PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, name);
             pstmt.setString(2, email);
@@ -61,6 +64,11 @@ public class UserDB {
                 userId = rs.getInt(1);
             }
 
+            PreparedStatement pstmt2 = con.prepareStatement(sql2);
+            pstmt2.setInt(1, LoggedUser.getInstance().id);
+            pstmt2.setString(2, "Created new user with id " + userId + " " + "and name " + name);
+            pstmt2.executeUpdate();
+
             return new User(userId, name, email, rights);
 
         } catch (SQLException ex) {
@@ -72,11 +80,17 @@ public class UserDB {
     public void deleteUser(Connection con, int id) {
         try {
             String sql = "DELETE FROM Person WHERE id = ?";
+            String sql2 = "INSERT INTO Log(user_id, action) VALUES(?,?)";
 
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, id);
 
             pstmt.executeUpdate();
+
+            PreparedStatement pstmt2 = con.prepareStatement(sql2);
+            pstmt2.setInt(1, LoggedUser.getInstance().id);
+            pstmt2.setString(2, "Deleted user with id " + id);
+            pstmt2.executeUpdate();
 
         } catch (SQLException ex) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
@@ -86,6 +100,7 @@ public class UserDB {
     public void editUser(Connection con, int id, String name, String email, int rights) {
         try {
             String sql = "UPDATE Person SET name = ?, email = ?, access_level = ? WHERE id = ? ";
+            String sql2 = "INSERT INTO Log(user_id, action) VALUES(?,?)";
 
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, name);
@@ -94,6 +109,11 @@ public class UserDB {
             pstmt.setInt(4, id);
 
             pstmt.executeUpdate();
+
+            PreparedStatement pstmt2 = con.prepareStatement(sql2);
+            pstmt2.setInt(1, LoggedUser.getInstance().id);
+            pstmt2.setString(2, "Edited user with id " + id);
+            pstmt2.executeUpdate();
 
         } catch (SQLException ex) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);

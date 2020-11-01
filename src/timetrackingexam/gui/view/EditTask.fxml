@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="fullBackground" stylesheets="@main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timetrackingexam.gui.controller.EditTaskController">
+   <children>
+      <Label layoutX="243.0" layoutY="14.0" styleClass="labelText" text="Edit Task">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <Label layoutX="132.0" layoutY="114.0" styleClass="labelText" text="Task name :">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <JFXTextField fx:id="txttaskname" layoutX="211.0" layoutY="109.0" />
+      <JFXRadioButton fx:id="radioBillable" layoutX="313.0" layoutY="243.0" text="Billable" />
+      <JFXButton layoutX="252.0" layoutY="309.0" onAction="#save" text="Save" />
+      <JFXButton layoutX="520.0" layoutY="351.0" onAction="#cancel" text="Cancel" />
+      <Label layoutX="224.0" layoutY="156.0" styleClass="labelText" text="Task time">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <JFXTextField fx:id="txtMinute" layoutX="211.0" layoutY="226.0" prefHeight="26.0" prefWidth="47.0" />
+      <Label layoutX="170.0" layoutY="192.0" styleClass="labelText" text="Hour :">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <Label layoutX="159.0" layoutY="231.0" styleClass="labelText" text="Minute :">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <JFXTextField fx:id="txtHour" layoutX="211.0" layoutY="187.0" prefHeight="26.0" prefWidth="47.0" />
+   </children>
+</AnchorPane>

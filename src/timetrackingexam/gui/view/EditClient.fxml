@@ -4,15 +4,27 @@
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="251.0" prefWidth="521.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timetrackingexam.gui.controller.EditClientController">
+<AnchorPane id="AnchorPane" prefHeight="280.0" prefWidth="550.0" styleClass="fullBackground" stylesheets="@main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timetrackingexam.gui.controller.EditClientController">
    <children>
-      <Label layoutX="197.0" layoutY="38.0" prefHeight="25.0" prefWidth="76.0" text="Name" />
-      <Label layoutX="197.0" layoutY="126.0" text="Rate" />
-      <JFXButton fx:id="btnClientCancelPanel" layoutX="235.0" layoutY="189.0" onAction="#btnCancelClientPanelAction" text="Cancel" />
-      <JFXButton fx:id="btnEditClientPanel" layoutX="179.0" layoutY="189.0" onAction="#btnEditClientPanelaction" text="Edit" />
-      <JFXTextField fx:id="txtClientEditNamePanel" layoutX="156.0" layoutY="78.0" />
-      <JFXTextField fx:id="txtClientEditRatePanel" layoutX="156.0" layoutY="153.0" />
-      <Label fx:id="labelErrorEditClient" layoutX="132.0" layoutY="212.0" prefHeight="25.0" prefWidth="234.0" />
+      <Label alignment="CENTER" layoutX="226.0" layoutY="45.0" prefHeight="25.0" prefWidth="76.0" text="Name">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <Label layoutX="246.0" layoutY="126.0" text="Rate">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <JFXButton fx:id="btnClientCancelPanel" layoutX="470.0" layoutY="229.0" onAction="#btnCancelClientPanelAction" text="Cancel" />
+      <JFXButton fx:id="btnEditClientPanel" layoutX="240.0" layoutY="190.0" onAction="#btnEditClientPanelaction" text="Edit" />
+      <JFXTextField fx:id="txtClientEditNamePanel" layoutX="197.0" layoutY="81.0" />
+      <JFXTextField fx:id="txtClientEditRatePanel" layoutX="197.0" layoutY="153.0" />
+      <Label fx:id="labelErrorEditClient" layoutX="150.0" layoutY="233.0" prefHeight="25.0" prefWidth="228.0" />
+      <Label layoutX="224.0" layoutY="10.0" text="Edit Client">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

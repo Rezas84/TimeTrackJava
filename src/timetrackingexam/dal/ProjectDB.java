@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import timetrackingexam.be.LoggedUser;
 import timetrackingexam.be.Project;
 import timetrackingexam.be.User;
 import timetrackingexam.bll.ProjectFactory;
@@ -81,6 +82,8 @@ public class ProjectDB {
         int projectId = -1;
         try {
             String sql = "Insert INTO Project (name, rate, client_id) VALUES (?,?,?)";
+            String sql2 = "INSERT INTO Log(user_id, action) VALUES(?,?)";
+
             PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, name);
             pstmt.setInt(2, rate);
@@ -92,6 +95,11 @@ public class ProjectDB {
                 projectId = rs.getInt(1);
             }
 
+            PreparedStatement pstmt2 = con.prepareStatement(sql2);
+            pstmt2.setInt(1, LoggedUser.getInstance().id);
+            pstmt2.setString(2, "Created new project with id " + projectId);
+            pstmt2.executeUpdate();
+
             return new Project(projectId, name, rate, clientName, clientId, clientRate);
         } catch (SQLException ex) {
             Logger.getLogger(ProjectDB.class.getName()).log(Level.SEVERE, null, ex);
@@ -102,10 +110,17 @@ public class ProjectDB {
     public void deleteProject(Connection con, int id) {
         try {
             String sql = "DELETE FROM Project WHERE id = ?";
+            String sql2 = "INSERT INTO Log(user_id, action) VALUES(?,?)";
+
             PreparedStatement pstmt = con.prepareStatement(sql);
 
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
+
+            PreparedStatement pstmt2 = con.prepareStatement(sql2);
+            pstmt2.setInt(1, LoggedUser.getInstance().id);
+            pstmt2.setString(2, "Deleted project with id " + id);
+            pstmt2.executeUpdate();
 
         } catch (SQLException ex) {
             Logger.getLogger(ProjectDB.class.getName()).log(Level.SEVERE, null, ex);
@@ -114,14 +129,22 @@ public class ProjectDB {
 
     public void editProject(Connection con, int id, String name, int rate, int clientId) {
         try {
-            String sql = "UPDATE Project SET name = ?, rate = ?, client_id WHERE id = ?";
+            String sql = "UPDATE Project SET name = ?, rate = ?, client_id = ? WHERE id = ?";
+            String sql2 = "INSERT INTO Log(user_id, action) VALUES(?,?)";
+
             PreparedStatement pstmt = con.prepareStatement(sql);
 
             pstmt.setString(1, name);
             pstmt.setInt(2, rate);
             pstmt.setInt(3, clientId);
+            pstmt.setInt(4, id);
 
             pstmt.executeUpdate();
+
+            PreparedStatement pstmt2 = con.prepareStatement(sql2);
+            pstmt2.setInt(1, LoggedUser.getInstance().id);
+            pstmt2.setString(2, "Edited project with id " + id);
+            pstmt2.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ProjectDB.class.getName()).log(Level.SEVERE, null, ex);
         }

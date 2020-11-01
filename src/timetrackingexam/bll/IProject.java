@@ -5,7 +5,6 @@
  */
 package timetrackingexam.bll;
 
-import java.sql.Connection;
 import java.util.List;
 import timetrackingexam.be.Project;
 
@@ -14,5 +13,5 @@ import timetrackingexam.be.Project;
  * @author narma
  */
 public interface IProject {
-    public List<Project> getAllProjectByUser( int user_id);
+    public List<Project> getAllProjectByUser(int user_id);
 }

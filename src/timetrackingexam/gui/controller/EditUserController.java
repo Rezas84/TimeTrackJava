@@ -12,12 +12,10 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import timetrackingexam.be.Role;
 import timetrackingexam.be.User;
-import timetrackingexam.bll.BllFacade;
-import timetrackingexam.bll.IFacade;
+import timetrackingexam.gui.model.FacadeModel;
 import timetrackingexam.help.Validator;
 
 /**
@@ -35,8 +33,7 @@ public class EditUserController implements Initializable {
     private JFXComboBox<Role> comboboxRole;
 
     SceneManager sm = new SceneManager();
-    IFacade bll = new BllFacade();
-
+    FacadeModel model;
     User user;
 
     /**
@@ -44,8 +41,9 @@ public class EditUserController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        comboboxRole.getItems().add(new Role(1, "Admin"));
-        comboboxRole.getItems().add(new Role(2, "Developer"));
+        model = FacadeModel.getInstance();
+        comboboxRole.getItems().add(new Role(1, "Developer"));
+        comboboxRole.getItems().add(new Role(2, "Admin"));
     }
 
     @FXML
@@ -66,7 +64,7 @@ public class EditUserController implements Initializable {
 
             alert.showAndWait();
         } else {
-            bll.editUser(user.getId(),
+            model.editUser(user.getId(),
                     txtName.getText(),
                     txtEmail.getText(),
                     comboboxRole.getSelectionModel().getSelectedItem().getId());

@@ -6,7 +6,6 @@
 package timetrackingexam.bll;
 
 import java.sql.Connection;
-import java.sql.Time;
 import java.util.List;
 import timetrackingexam.be.Task;
 import timetrackingexam.be.TaskTime;
@@ -23,10 +22,10 @@ public class TaskManager implements ITask {
     TaskDB taskdb = new TaskDB();
 
     @Override
-    public void createNewTask(String name, int project_id, int user_id) {
+    public void createNewTask(String name, int project_id, int user_id, boolean isbillable) {
         Connection con = conpool.checkOut();
 
-        taskdb.createNewTask(con, name, project_id,user_id);
+        taskdb.createNewTask(con, name, project_id, user_id, isbillable);
         conpool.checkIn(con);
     }
 
@@ -46,20 +45,19 @@ public class TaskManager implements ITask {
         return tasks;
     }
 
-   /* @Override
-    public void assignTaskToUser(int user_id, int task_id) {
-        Connection con = conpool.checkOut();
-
-        taskdb.assignTaskToUser(con, user_id, task_id);
-        conpool.checkIn(con);
-    }*/
-
     @Override
     public List<TaskTime> getTimeForTask(int user_id, int task_id) {
         Connection con = conpool.checkOut();
         List<TaskTime> tasks = taskdb.getTimeForTask(con, user_id, task_id);
         conpool.checkIn(con);
         return tasks;
+    }
+
+    @Override
+    public void updateTask(int user_id, int task_id, String name, int time, boolean billable) {
+        Connection con = conpool.checkOut();
+        taskdb.updateTask(con, user_id, task_id, name, time, billable);
+        conpool.checkIn(con);
     }
 
 }

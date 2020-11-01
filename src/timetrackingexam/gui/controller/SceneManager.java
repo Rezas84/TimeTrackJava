@@ -33,6 +33,7 @@ public class SceneManager {
         scenes.put("adminNewEditUser", "/timetrackingexam/gui/view/AdminNewEditUser.fxml");
         scenes.put("adminReports", "/timetrackingexam/gui/view/AdminReports.fxml");
         scenes.put("loginscr", "/timetrackingexam/gui/view/Loginscr.fxml");
+        scenes.put("editPassword", "/timetrackingexam/gui/view/EditPassword.fxml");
     }
 
     public void changeScene(ActionEvent event, String sceneName) {

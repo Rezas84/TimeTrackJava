@@ -8,17 +8,15 @@ package timetrackingexam.gui.controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import timetrackingexam.be.Client;
-import timetrackingexam.bll.BllFacade;
-import timetrackingexam.bll.IFacade;
+import timetrackingexam.gui.model.FacadeModel;
 
 /**
  * FXML Controller class
@@ -35,36 +33,47 @@ public class EditClientController implements Initializable {
     private JFXTextField txtClientEditNamePanel;
     @FXML
     private JFXTextField txtClientEditRatePanel;
-    Client client;
-    IFacade bll = new BllFacade();
-    private ObservableList<Client> data = FXCollections.observableList(bll.getAllClient());
     @FXML
     private Label labelErrorEditClient;
-
+    Client client;
+    FacadeModel model;
+    //private ObservableList<Client> data = FXCollections.observableList(model.getAllClient());
+     ArrayList<Client> data = new ArrayList();
     /**
-     * Initializes the controller class.
+     * initialize the model.
+     * @param url
+     * @param rb 
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        model = FacadeModel.getInstance();
     }
-
+/**
+ * 
+ * @param event 
+ */
     @FXML
     private void btnEditClientPanelaction(ActionEvent event) {
         if (labeIsNotEmpty()) {
             client.setName(txtClientEditNamePanel.getText());
             client.setRate(Integer.parseInt(txtClientEditRatePanel.getText()));
-            bll.editClient(client);
+            model.editClient(client);
             cancelAction(event);
         }
     }
-
+/**
+ * set the rate and the name of the client .
+ * @param client .Business entity of the client.
+ */
     public void acceptData(Client client) {
         this.client = client;
         txtClientEditNamePanel.setText(this.client.getName());
         txtClientEditRatePanel.setText(String.valueOf(this.client.getRate()));
     }
-
+/**
+ * Action for the button to to cancel the panel.
+ * @param event .Action Event
+ */
     @FXML
     private void btnCancelClientPanelAction(ActionEvent event) {
         cancelAction(event);

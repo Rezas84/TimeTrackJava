@@ -32,7 +32,10 @@ public class FTaskTime {
     public void setTaskname(Date taskname) {
         this.taskname = taskname;
     }
-
+    /**
+     * formula for printing out the time 00:00:00
+     * @return String 
+     */
     public String getWorkinghours() {
         int seconds = workinghours % 60;
         int minutes = (workinghours / 60) % 60;
@@ -62,7 +65,9 @@ public class FTaskTime {
     public void setWorkinghours(int workinghours) {
         this.workinghours = workinghours;
     }
-
+    public int getTotalWorkinghours() {
+        return workinghours;
+    }
     @Override
     public String toString() {
         return  "date: " + taskname + " time worked : " + getWorkinghours() ;

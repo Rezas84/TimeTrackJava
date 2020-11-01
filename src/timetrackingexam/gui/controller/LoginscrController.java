@@ -9,16 +9,13 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
-import timetrackingexam.be.LoggedUser;
-import timetrackingexam.bll.BllFacade;
-import timetrackingexam.bll.IFacade;
+import timetrackingexam.gui.model.FacadeModel;
 import timetrackingexam.help.Hash;
+import timetrackingexam.help.Validator;
 
 /**
  * FXML Controller class
@@ -33,7 +30,7 @@ public class LoginscrController implements Initializable {
     private JFXPasswordField txtPassword;
 
     Hash hash = new Hash();
-    IFacade bll = new BllFacade();
+    FacadeModel model;
     SceneManager sm = new SceneManager();
 
     /**
@@ -41,20 +38,20 @@ public class LoginscrController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        model = FacadeModel.getInstance();
     }
 
     @FXML
     private void login(ActionEvent event) {
         String email = txtEmail.getText();
         String password = hash.hashPass(txtPassword.getText());
-
+        
         if (isValid(email, password)) {
             mainwindow(event);
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Login");
-            alert.setHeaderText("Wrong name or password");
+            alert.setHeaderText("Wrong email or password");
 
             alert.showAndWait();
         }
@@ -62,28 +59,26 @@ public class LoginscrController implements Initializable {
 
     @FXML
     private void forgotPassword(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        if (txtEmail.getText().isEmpty() || txtEmail.getText() == null) {
+            alert.setTitle("Reset password");
+            alert.setHeaderText("Email field needs to be fiiled");
+            return;
+        }
+
+        String email = txtEmail.getText();
+        if (Validator.validateEmail(email) && model.isEmailValid(email)) {
+            model.resetPassword(email);
+            alert.setTitle("Reset password");
+            alert.setHeaderText("New password was sent to email");
+        }
     }
 
     private boolean isValid(String email, String password) {
-        return bll.isValidLogin(email, password);
+        return model.isValidLogin(email, password);
     }
 
     private void mainwindow(ActionEvent event) {
-        LoggedUser user = LoggedUser.getInstance();
-
-        try {
-            switch (user.rights) {
-                case 1:
-                    sm.changeScene(event, "userMain");
-                    break;
-                case 2:
-                    sm.changeScene(event, "adminMain");
-                    break;
-                default:
-                    throw new Exception("User rights unrecognized");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(LoginscrController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        sm.changeScene(event, "userMain");
     }
 }

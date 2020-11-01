@@ -5,7 +5,6 @@
  */
 package timetrackingexam.bll;
 
-import static java.lang.Thread.sleep;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +22,6 @@ public class TimeCounter {
     private int seconds = 1;
     private int minutes = 0;
     private int hours = 0;
-    private int delay = 1;
     private Label time;
     private String lblhours;
     private String lblminutes;
@@ -36,11 +34,12 @@ public class TimeCounter {
     }
 
     private ScheduledExecutorService absenceThreadExecutor;
-
+    // counts up in every second 
     public void counter() {
         absenceThreadExecutor = Executors.newSingleThreadScheduledExecutor();
         absenceThreadExecutor.scheduleAtFixedRate(() -> {
             Platform.runLater(() -> {
+                // The selection solves the problem of splitting up the time into hours, minutes, seconds
                 if (seconds < 10) {
                     lblseconds = ":0" + seconds;
                 } else {
@@ -61,12 +60,10 @@ public class TimeCounter {
                 seconds++;
                 totalseconds++;
                 if (seconds >= 60) {
-
                     seconds = 0;
                     minutes++;
                 }
                 if (minutes >= 60) {
-
                     seconds = 0;
                     minutes = 0;
                     hours++;
@@ -74,7 +71,7 @@ public class TimeCounter {
             });
         }, 0, 1, TimeUnit.SECONDS);
     }
-
+    // Shuts down the thread and resets the counter values to 0
     public int stopCounter() {
         absenceThreadExecutor.shutdown();
         seconds = 0;

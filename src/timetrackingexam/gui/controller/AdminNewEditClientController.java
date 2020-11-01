@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package timetrackingexam.gui.controller;
 
 import com.jfoenix.controls.JFXButton;
@@ -19,6 +14,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -27,30 +23,20 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import timetrackingexam.be.Client;
-import timetrackingexam.bll.BllFacade;
-import timetrackingexam.bll.IFacade;
+import timetrackingexam.gui.model.FacadeModel;
 
 /**
  * FXML Controller class
  *
- * @author narma
+ * @author Reza
  */
 public class AdminNewEditClientController implements Initializable {
 
-    @FXML
-    private JFXButton btnMainPage;
-    @FXML
-    private JFXButton btnReports;
-    @FXML
-    private JFXButton BtnNewEditProject;
-    @FXML
-    private JFXButton BtnNewEditUser;
-    @FXML
-    private JFXButton btnLogout;
     @FXML
     private JFXButton btnAddClient;
     @FXML
@@ -65,60 +51,48 @@ public class AdminNewEditClientController implements Initializable {
     private TableColumn<Client, String> ColumClientName;
     @FXML
     private TableColumn<Client, Integer> columnRate;
+    @FXML
+    private VBox panelVbox;
 
     SceneManager sm = new SceneManager();
-    IFacade bll = new BllFacade();
+    FacadeModel model;
+    SidePanel sp = new SidePanel();
     private ObservableList<Client> data = FXCollections.observableArrayList();
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        sp.init(panelVbox);
+        model = FacadeModel.getInstance();
         initTableViewClient();
         addEditButtonToTable();
         addDeleteButtonToTable();
     }
 
+    /**
+     * Initializes the Table View of the ClientControler class.Set client's
+     * rates and names columns.
+     */
     private void initTableViewClient() {
-       ObservableList<Client> data = FXCollections.observableList(bll.getAllClient());
-
-        tableviewClient.setItems(data);
+        initTableView();
         ColumClientName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnRate.setCellValueFactory(new PropertyValueFactory<>("rate"));
 
     }
 
-    @FXML
-    private void btnMainPageAction(ActionEvent event) {
-        sm.changeScene(event, "adminMain");
-    }
-
-    @FXML
-    private void btnReportsAction(ActionEvent event) {
-        sm.changeScene(event, "adminReports");
-    }
-
-    @FXML
-    private void BtnNewEditProjectAction(ActionEvent event) {
-        sm.changeScene(event, "adminNewEditProject");
-    }
-
-    @FXML
-    private void BtnNewEditUserAction(ActionEvent event) {
-        sm.changeScene(event, "adminNewEditUser");
-    }
-
-    @FXML
-    private void btnLogoutAction(ActionEvent event) {
-        sm.logOut(event);
-    }
-
+    /**
+     * Action for the button to add a new Client.
+     *
+     * @param event .Action Event
+     */
     @FXML
     private void btnAddClientAction(ActionEvent event) {
         if (labeIsNotEmpty()) {
             String name = txtClientName.getText();
             int rate = Integer.parseInt(txtClientRate.getText());
-            bll.addNewClient(rate, name);
+            model.addNewClient(rate, name);
             txtClientName.setText("");
             txtClientRate.setText("");
             initTableViewClient();
@@ -127,6 +101,11 @@ public class AdminNewEditClientController implements Initializable {
 
     }
 
+    /**
+     * Check validation of
+     *
+     * @return
+     */
     private boolean labeIsNotEmpty() {
         if (txtClientName.getText() == null || txtClientName.getText().trim().isEmpty()) {
             labelError.setText("Please enter the Client Name");
@@ -138,6 +117,9 @@ public class AdminNewEditClientController implements Initializable {
         return true;
     }
 
+    /**
+     * Add a Dynamic column and delete button for each Client.
+     */
     private void addDeleteButtonToTable() {
         TableColumn<Client, Void> colBtnDel = new TableColumn("Delete");
 
@@ -151,7 +133,7 @@ public class AdminNewEditClientController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Client client = getTableView().getItems().get(getIndex());
-                            bll.deleteClient(client);
+                            model.deleteClient(client);
                             initTableViewClient();
 
                         });
@@ -176,6 +158,9 @@ public class AdminNewEditClientController implements Initializable {
         tableviewClient.getColumns().add(colBtnDel);
     }
 
+    /**
+     * Add a Dynamic column and Edit button for each Client.
+     */
     private void addEditButtonToTable() {
         TableColumn<Client, Void> colBtnEdit = new TableColumn("Edit");
 
@@ -193,10 +178,11 @@ public class AdminNewEditClientController implements Initializable {
                                 System.out.println("selectedData: " + client.getName());
                                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/timetrackingexam/gui/view/EditClient.fxml"));
                                 Parent root = loader.load();
+                                //Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow()
                                 Stage stage = new Stage();
 
-                                EditClientController emc = loader.getController();
-                                emc.acceptData(client);
+                                EditClientController ecc = loader.getController();
+                                ecc.acceptData(client);
 
                                 Scene scene = new Scene(root);
 
@@ -206,7 +192,7 @@ public class AdminNewEditClientController implements Initializable {
                                 stage.setOnHiding(new EventHandler<WindowEvent>() {
                                     @Override
                                     public void handle(WindowEvent event) {
-                                        init();
+                                        initTableView();
                                     }
                                 });
                             } catch (IOException ex) {
@@ -235,11 +221,12 @@ public class AdminNewEditClientController implements Initializable {
 
     }
 
-    public void init() {
-        data = FXCollections.observableArrayList(bll.getAllClient());
-        /* categoryList.setItems(obsCategories);
-        categoryList.getSelectionModel().select(0);
-        obsMovie = FXCollections.observableArrayList(categoryList.getSelectionModel().getSelectedItem().getAllMovies());*/
+    /**
+     * Initializes the Table View of the ClientControler class. Refresh the
+     * table to update it.
+     */
+    public void initTableView() {
+        data = FXCollections.observableArrayList(model.getAllClient());
         tableviewClient.setItems(data);
 
     }

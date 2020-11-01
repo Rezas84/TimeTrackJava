@@ -18,8 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import timetrackingexam.be.Client;
 import timetrackingexam.be.Project;
-import timetrackingexam.bll.BllFacade;
-import timetrackingexam.bll.IFacade;
+import timetrackingexam.gui.model.FacadeModel;
 
 /**
  * FXML Controller class
@@ -36,8 +35,7 @@ public class EditProjectController implements Initializable {
     private JFXComboBox<Client> comboboxClient;
 
     SceneManager sm = new SceneManager();
-    IFacade bll = new BllFacade();
-
+    FacadeModel model;
     Project project;
     ArrayList<Client> clients;
 
@@ -46,8 +44,9 @@ public class EditProjectController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        model = FacadeModel.getInstance();
         try {
-            clients = bll.getAllClient();
+            clients = model.getAllClient();
             comboboxClient.setItems(FXCollections.observableList(clients));
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,6 +55,7 @@ public class EditProjectController implements Initializable {
         comboboxClient.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Client> options, Client oldValue, Client newValue) -> {
             txtRate.setText(comboboxClient.getSelectionModel().getSelectedItem().getRate() + "");
         });
+
     }
 
     @FXML
@@ -87,7 +87,7 @@ public class EditProjectController implements Initializable {
                 return;
             }
 
-            bll.editProject(project.getId(),
+            model.editProject(project.getId(),
                     txtName.getText(),
                     rate,
                     comboboxClient.getSelectionModel().getSelectedItem().getId());
@@ -103,9 +103,13 @@ public class EditProjectController implements Initializable {
     public void setProject(Project project) {
         this.project = project;
         txtName.setText(project.getName());
-        
+
         clients.stream().filter((c) -> (project.getCLient().getId() == c.getId())).forEachOrdered((c) -> {
             comboboxClient.getSelectionModel().select(c);
         });
+
+        //first time edit page is opend rate is set to value from db
+        //this had to be added becasue change listener changed it on initializitaion
+        txtRate.setText(project.getRate() + "");
     }
 }

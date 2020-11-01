@@ -6,7 +6,6 @@
 package timetrackingexam.bll;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 import timetrackingexam.be.Project;
 import timetrackingexam.dal.ConnectionPool;

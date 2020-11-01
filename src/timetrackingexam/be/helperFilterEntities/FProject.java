@@ -18,10 +18,26 @@ public class FProject {
     private int id;
 
     private String name;
-    
+    private int user;
     private int rate;
 
-    private String clientName;
+    private int workinghours;
+    private String userName;
+
+    private double gottenPay = 0;
+
+    public double getGottenPay() {
+        return gottenPay;
+    }
+
+    public void setGottenPay(double gottenPay) {
+        this.gottenPay += gottenPay;
+    }
+
+    public void setGottenPayToZero() {
+        this.gottenPay = 0;
+    }
+    private int totalCountOfTasks;
 
     public FProject(int id, String name, int rate) {
 
@@ -30,18 +46,36 @@ public class FProject {
         this.rate = rate;
     }
 
+    public int getUser() {
+        return user;
+    }
+
+    public void setUser(int user) {
+        this.user = user;
+    }
+
     public int getRate() {
         return rate;
     }
 
-
+    public int getTotalCountOfTasks() {
+        totalCountOfTasks = 0;
+        for (FTask filterTask : filterTasks) {
+            if (filterTask.getUs().getId() == user) {
+                totalCountOfTasks++;
+            }
+        }
+        return totalCountOfTasks;
+    }
 
     public List<FTask> getFilterTasks() {
         return filterTasks;
     }
-  public void setListFilterTasks(List<FTask> taskerino) {
+
+    public void setListFilterTasks(List<FTask> taskerino) {
         this.filterTasks = taskerino;
     }
+
     public void setFilterTasks(FTask taskerino) {
         this.filterTasks.add(taskerino);
     }
@@ -66,12 +100,13 @@ public class FProject {
         this.id = id;
     }
 
-    public String getClientName() {
-        return clientName;
-    }
-
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
+    public String getUserName() {
+        for (FTask filterTask : filterTasks) {
+            if (filterTask.getUs().getId() == user) {
+                return filterTask.getUs().getName();
+            }
+        }
+        return "";
     }
 
     @Override
@@ -79,4 +114,39 @@ public class FProject {
         return name + "" + filterTasks;
     }
 
+    /**
+     * get working hours for a user, with adding total working hours on a task
+     * @return working hours in 00:00:00 formula
+     */ 
+    public String getWorkinghours() {
+        int totalWorkingHours = 0;
+        for (FTask filterTask : filterTasks) {
+            if (filterTask.getUs().getId() == user) {
+                totalWorkingHours = totalWorkingHours + filterTask.getTotalWorkinghours();
+            }
+        }
+        int seconds = totalWorkingHours % 60;
+        int minutes = (totalWorkingHours / 60) % 60;
+        int hours = (totalWorkingHours / 60) / 60;
+        String secs;
+        String mins;
+        String hourse;       
+        if (seconds < 10) {
+            secs = ":0" + seconds;
+        } else {
+            secs = ":" + seconds;
+        }
+        if (minutes < 10) {
+            mins = ":0" + minutes;
+        } else {
+            mins = ":" + minutes;
+        }
+        if (hours < 10) {
+            hourse = "0" + hours;
+        } else {
+            hourse = "" + hours;
+        }
+        return hourse + mins + secs;
+
+    }
 }

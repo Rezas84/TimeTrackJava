@@ -11,13 +11,13 @@ package timetrackingexam.be;
  */
 public class User {
     int id;
-    String name;
+    String uname;
     String email;
     int rights;
 
     public User(int id, String name, String email, int rights) {
         this.id = id;
-        this.name = name;
+        this.uname = name;
         this.email = email;
         this.rights = rights;
     }
@@ -27,7 +27,7 @@ public class User {
     }
 
     public String getName() {
-        return name;
+        return uname;
     }
 
     public String getEmail() {
@@ -39,6 +39,6 @@ public class User {
     }
     @Override
     public String toString() {
-        return name;
+        return uname;
     }
 }

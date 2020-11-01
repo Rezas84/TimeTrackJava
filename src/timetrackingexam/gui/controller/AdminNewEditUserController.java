@@ -5,7 +5,6 @@
  */
 package timetrackingexam.gui.controller;
 
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -23,17 +21,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import timetrackingexam.be.Role;
 import timetrackingexam.be.User;
-import timetrackingexam.bll.BllFacade;
-import timetrackingexam.bll.IFacade;
+import timetrackingexam.gui.model.FacadeModel;
+import timetrackingexam.help.Hash;
 import timetrackingexam.help.Validator;
 
 /**
@@ -43,18 +42,6 @@ import timetrackingexam.help.Validator;
  */
 public class AdminNewEditUserController implements Initializable {
 
-    @FXML
-    private JFXButton btnMainPage;
-    @FXML
-    private JFXButton btnReport;
-    @FXML
-    private JFXButton btnNewEditProject;
-    @FXML
-    private JFXButton btnNewEditClient;
-    @FXML
-    private JFXButton btnNewEditUser;
-    @FXML
-    private JFXButton btnLogout;
     @FXML
     private JFXTextField txtName;
     @FXML
@@ -69,10 +56,15 @@ public class AdminNewEditUserController implements Initializable {
     private TableColumn<User, String> columnName;
     @FXML
     private TableColumn<User, String> columnEmail;
+    @FXML
+    private SplitPane splitpane;
+    @FXML
+    private VBox panelVbox;
 
-    IFacade bll = new BllFacade();
+    FacadeModel model;
     SceneManager sm = new SceneManager();
-
+    Hash hash = new Hash();
+    SidePanel sp = new SidePanel();
     ArrayList<User> users = new ArrayList();
 
     /**
@@ -80,49 +72,19 @@ public class AdminNewEditUserController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        comboboxRole.getItems().add(new Role(1, "Admin"));
-        comboboxRole.getItems().add(new Role(2, "Developer"));
+        sp.init(panelVbox);
+        model = FacadeModel.getInstance();
+        comboboxRole.getItems().add(new Role(1, "Developer"));
+        comboboxRole.getItems().add(new Role(2, "Admin"));
         comboboxRole.getSelectionModel().selectFirst();
 
-        users = bll.getAllUsers();
+        users = model.getAllUsers();
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         addEditButtonToTable();
         addDeleteButtonToTable();
 
         tableUsers.setItems(FXCollections.observableList(users));
-    }
-
-    @FXML
-    private void btnMainPageAction(ActionEvent event) {
-        sm.changeScene(event, "adminMain");
-    }
-
-    @FXML
-    private void btnLogoutAction(ActionEvent event) {
-        sm.logOut(event);
-    }
-
-    @FXML
-    private void btnReportAction(ActionEvent event) {
-        sm.changeScene(event, "adminReports");
-    }
-
-    @FXML
-    private void btnNewEditProjectAction(ActionEvent event) {
-        sm.changeScene(event, "adminNewEditProject");
-
-    }
-
-    @FXML
-    private void btnNewEditClientAction(ActionEvent event) {
-        sm.changeScene(event, "adminNewEditClient");
-    }
-
-    @FXML
-    private void btnNewEditUserAction(ActionEvent event) {
-        sm.changeScene(event, "adminNewEditUser");
-
     }
 
     @FXML
@@ -147,10 +109,10 @@ public class AdminNewEditUserController implements Initializable {
 
             alert.showAndWait();
         } else {
-            User newUser = bll.addNewUser(txtName.getText(),
+            User newUser = model.addNewUser(txtName.getText(),
                     txtEmail.getText(),
                     comboboxRole.getSelectionModel().getSelectedItem().getId(),
-                    txtPassword.getText());
+                    hash.hashPass(txtPassword.getText()));
 
             users.add(newUser);
             tableUsers.setItems(FXCollections.observableList(users));
@@ -171,7 +133,7 @@ public class AdminNewEditUserController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             User u = getTableView().getItems().get(getIndex());
-                            bll.deleteUser(u.getId());
+                            model.deleteUser(u.getId());
                             users.remove(u);
                             tableUsers.setItems(FXCollections.observableList(users));
                         });

@@ -2,26 +2,36 @@
  * StyleSheet for
  */
 .background {
-    -fx-background-color: #6FA8DC;
+    -fx-background-color: white;
 }
+.sidePanel{
+    -fx-background-color: linear-gradient(to bottom right, #435a9a, #8090ba, #dadeeb);
+}
+.fullBackground{
+    -fx-background-color: linear-gradient(to bottom right, #435a9a, #8090ba, #dadeeb);
+}
+.labelText{
+    -fx-font-family: Arial, Helvetica, sans-serif;
+}
+
 .button
 {
     -fx-border-color: #050505;
     -fx-border-width: 2px;
     -fx-border-radius: 4px;
-    -fx-font-size: 18;
+    -fx-font-size: 14;
     
 }
 .button:hover
 {
     -fx-background-color: #2588D7;
     -fx-transition: width 1s;
-    -fx-font-size: 20;  
+    -fx-font-size: 15;  
 }
 .table-view {
     -fx-base: #1d1d1d;
-    -fx-control-inner-background: #1d1d1d;
-    -fx-background-color: #1d1d1d;
+    -fx-control-inner-background: #435a9a;
+    -fx-background-color: linear-gradient(to bottom right, #435a9a, #8090ba, #dadeeb);
     -fx-table-cell-border-color: transparent;
     -fx-table-header-border-color: transparent;
     -fx-padding: 5;

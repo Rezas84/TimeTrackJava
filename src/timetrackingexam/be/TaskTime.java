@@ -12,9 +12,13 @@ import java.sql.Date;
  * @author narma
  */
 public class TaskTime {
-
-    private Date taskname;
+    // It has to be taskname, despite it is a Date type.
+    // In user main the treeview uses the same columns for treeitems and children for treeitems as well and that's why the entity has to have the smae name
+    private Date taskname; 
     private int workinghours;
+
+    public TaskTime() {
+    }
 
     public TaskTime(Date date, int hours) {
         this.taskname = date;
@@ -29,6 +33,14 @@ public class TaskTime {
     }
     public void setTaskname(Date taskname) {
         this.taskname = taskname;
+    }
+    public int getWorkingHours1() {
+        return workinghours;
+        
+    }
+    public int getWorkinghoursByHour(int second) {
+        int minutes = (second / 60)/60 ;
+        return minutes;
     }
 
     public String getWorkinghours() {

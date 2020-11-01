@@ -5,7 +5,6 @@
  */
 package timetrackingexam.gui.controller;
 
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
@@ -27,12 +26,12 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import timetrackingexam.be.Client;
 import timetrackingexam.be.Project;
-import timetrackingexam.bll.BllFacade;
-import timetrackingexam.bll.IFacade;
+import timetrackingexam.gui.model.FacadeModel;
 
 /**
  * FXML Controller class
@@ -41,18 +40,6 @@ import timetrackingexam.bll.IFacade;
  */
 public class AdminNewEditProjectController implements Initializable {
 
-    @FXML
-    private JFXButton btnMainPage;
-    @FXML
-    private JFXButton btnReport;
-    @FXML
-    private JFXButton btnNewEditProject;
-    @FXML
-    private JFXButton btnNewEditClient;
-    @FXML
-    private JFXButton btnNewEditUser;
-    @FXML
-    private JFXButton btnLogout;
     @FXML
     private JFXTextField txtName;
     @FXML
@@ -67,9 +54,12 @@ public class AdminNewEditProjectController implements Initializable {
     private TableColumn<Project, Integer> columnRate;
     @FXML
     private TableColumn<Project, String> columnClient;
+    @FXML
+    private VBox panelVbox;
 
     SceneManager sm = new SceneManager();
-    IFacade bll = new BllFacade();
+    FacadeModel model;
+    SidePanel sp = new SidePanel();
 
     ArrayList<Project> projects = new ArrayList();
 
@@ -78,6 +68,8 @@ public class AdminNewEditProjectController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        sp.init(panelVbox);
+        model = FacadeModel.getInstance();
         addEditButtonToTable();
         addDeleteButtonToTable();
         addManageButtonToTable();
@@ -86,10 +78,10 @@ public class AdminNewEditProjectController implements Initializable {
         columnRate.setCellValueFactory(new PropertyValueFactory<>("rate"));
 
         try {
-            comboboxClient.setItems(FXCollections.observableList(bll.getAllClient()));
+            comboboxClient.setItems(FXCollections.observableList(model.getAllClient()));
             comboboxClient.getSelectionModel().selectFirst();
 
-            projects = bll.getAllProject();
+            projects = model.getAllProject();
             tableProjects.setItems(FXCollections.observableList(projects));
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,35 +90,6 @@ public class AdminNewEditProjectController implements Initializable {
         comboboxClient.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Client> options, Client oldValue, Client newValue) -> {
             txtRate.setText(comboboxClient.getSelectionModel().getSelectedItem().getRate() + "");
         });
-    }
-
-    @FXML
-    private void btnMainPageAction(ActionEvent event) {
-        sm.changeScene(event, "adminMain");
-    }
-
-    @FXML
-    private void btnReportAction(ActionEvent event) {
-        sm.changeScene(event, "adminReports");
-    }
-
-    @FXML
-    private void btnNewEditProject(ActionEvent event) {
-    }
-
-    @FXML
-    private void btnNewEditClientAction(ActionEvent event) {
-        sm.changeScene(event, "adminNewEditClient");
-    }
-
-    @FXML
-    private void btnNewEditUserAction(ActionEvent event) {
-        sm.changeScene(event, "adminNewEditUser");
-    }
-
-    @FXML
-    private void btnLogoutAction(ActionEvent event) {
-        sm.logOut(event);
     }
 
     @FXML
@@ -158,7 +121,7 @@ public class AdminNewEditProjectController implements Initializable {
                 return;
             }
 
-            Project p = bll.addNewProject(txtName.getText(),
+            Project p = model.addNewProject(txtName.getText(),
                     comboboxClient.getSelectionModel().getSelectedItem().getId(),
                     comboboxClient.getSelectionModel().getSelectedItem().getName(),
                     comboboxClient.getSelectionModel().getSelectedItem().getRate(),
@@ -184,7 +147,7 @@ public class AdminNewEditProjectController implements Initializable {
                         btn.setOnAction((ActionEvent event) -> {
                             Project p = getTableView().getItems().get(getIndex());
 
-                            bll.deleteProject(p.getId());
+                            model.deleteProject(p.getId());
 
                             projects.remove(p);
                             tableProjects.setItems(FXCollections.observableList(projects));

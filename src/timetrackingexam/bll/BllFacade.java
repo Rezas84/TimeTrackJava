@@ -27,6 +27,7 @@ public class BllFacade implements IFacade {
     ClientDB cdb = new ClientDB();
     UserDB udb = new UserDB();
     ProjectDB projectDB = new ProjectDB();
+    CredentialManager cm = new CredentialManager();
 
     @Override
     public boolean isValidLogin(String email, String password) {
@@ -138,5 +139,20 @@ public class BllFacade implements IFacade {
         Connection con = conpool.checkOut();
         projectDB.addUsersToProject(con, users, projectId);
         conpool.checkIn(con);
+    }
+
+    @Override
+    public boolean isEmailValid(String email) {
+        return cm.isEmailValid(email);
+    }
+
+    @Override
+    public void resetPassword(String eamil) {
+        cm.resetPassword(eamil);
+    }
+
+    @Override
+    public void userSetPassword(int id, String newPassword) {
+        cm.userSetPassword(id, newPassword);
     }
 }

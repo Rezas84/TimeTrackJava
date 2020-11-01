@@ -5,7 +5,6 @@
  */
 package timetrackingexam.bll;
 
-import java.sql.Time;
 import timetrackingexam.be.Task;
 
 /**
@@ -14,8 +13,8 @@ import timetrackingexam.be.Task;
  */
 public class TaskFactory {
     
-    public Task makeTask(int id, String name, int hours)
+    public Task makeTask(int id, String name, int hours,String state)
     {
-        return new Task(id,name,hours);
+        return new Task(id,name,hours,state);
     }
 }

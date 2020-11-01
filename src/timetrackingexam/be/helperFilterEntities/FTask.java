@@ -15,21 +15,28 @@ import timetrackingexam.be.User;
  */
 public class FTask {
 
-    private List<FTaskTime> filteredTaskTime = new ArrayList();;
+    private List<FTaskTime> filteredTaskTime = new ArrayList();
+    ;
     private int id;
     private String taskname;
     private int workinghours;
     private int userID;
-   
+    private String state;
     private User us;
-
-    public FTask(int id,User us, String taskname, int workinghours) {
+    public FTask(int id,String state, User us, String taskname, int workinghours) {
         this.id = id;
         this.us = us;
         this.taskname = taskname;
         this.workinghours = workinghours;
+        this.state = state;
+    }
+    public String getState() {
+        return state;
     }
 
+    public void setState(String state) {
+        this.state = state;
+    }
     public User getUs() {
         return us;
     }
@@ -37,8 +44,7 @@ public class FTask {
     public void setUs(User us) {
         this.us = us;
     }
-    
-    
+
     public int getUserID() {
         return userID;
     }
@@ -46,6 +52,7 @@ public class FTask {
     public void setUserID(int userID) {
         this.userID = userID;
     }
+
     public String getTaskname() {
         return taskname;
     }
@@ -66,6 +73,10 @@ public class FTask {
         this.taskname = taskname;
     }
 
+     /**
+      * formula for printing out the time 00:00:00
+      * @return hours worked in a task
+      */
     public int getWorkinghours() {
         int seconds = workinghours % 60;
         int minutes = (workinghours / 60) % 60;
@@ -97,6 +108,15 @@ public class FTask {
         this.workinghours = workinghours;
     }
 
+    public int getTotalWorkinghours() {
+        int totalWorkingHours = 0;
+       
+        for (FTaskTime timeFilter : filteredTaskTime) {
+                totalWorkingHours = totalWorkingHours + timeFilter.getTotalWorkinghours();
+        }
+        return totalWorkingHours;
+    }
+
     public int getId() {
         return id;
     }
@@ -107,7 +127,7 @@ public class FTask {
 
     @Override
     public String toString() {
-        return  taskname + " , logs : =" + filteredTaskTime ;
+        return taskname + " , logs : =" + filteredTaskTime;
     }
-    
+
 }

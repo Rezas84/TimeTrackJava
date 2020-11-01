@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import timetrackingexam.be.LoggedUser;
 
 /**
@@ -41,4 +43,44 @@ public class Authentication {
         return false;
     }
 
+    public boolean isEmailValid(Connection con, String email) {
+        try {
+            String sql = "SELECT id FROM Person WHERE email = ?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Authentication.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public void resetPassword(Connection con, String email, String newPassword) {
+        try {
+            String sql = "UPDATE Person SET password = ? WHERE email = ?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, newPassword);
+            pstmt.setString(2, email);
+            pstmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Authentication.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void userSetPassword(Connection con, int id, String newPassword) {
+        try {
+            String sql = "UPDATE Person SET password = ? WHERE id = ?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, newPassword);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(Authentication.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

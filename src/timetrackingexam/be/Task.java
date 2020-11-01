@@ -5,8 +5,6 @@
  */
 package timetrackingexam.be;
 
-import java.sql.Time;
-
 /**
  *
  * @author narma
@@ -17,12 +15,26 @@ public class Task {
     private String taskname;
     private int workinghours;
 
-    public Task(int id, String taskname, int workinghours) {
+    private String state;
+
+   
+
+    public Task(int id, String taskname, int workinghours, String state) {
         this.id = id;
         this.taskname = taskname;
         this.workinghours = workinghours;
+        this.state = state;
+
     }
 
+     public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+    
     public String getTaskname() {
         return taskname;
     }

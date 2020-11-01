@@ -8,7 +8,9 @@ package timetrackingexam.gui.controller;
 import com.jfoenix.controls.JFXComboBox;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,8 +21,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import timetrackingexam.be.Project;
 import timetrackingexam.be.User;
-import timetrackingexam.bll.BllFacade;
-import timetrackingexam.bll.IFacade;
+import timetrackingexam.gui.model.FacadeModel;
 
 /**
  * FXML Controller class
@@ -41,10 +42,9 @@ public class EditDeveloperProjectController implements Initializable {
     private Label lblProjectName;
 
     SceneManager sm = new SceneManager();
-    IFacade bll = new BllFacade();
-
+    FacadeModel model;
     Project project;
-    ArrayList<User> freeUsers = new ArrayList();
+    List<User> freeUsers;
     ArrayList<User> inProjectUsers;
 
     /**
@@ -54,7 +54,7 @@ public class EditDeveloperProjectController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-
+        model = FacadeModel.getInstance();
     }
 
     @FXML
@@ -75,7 +75,7 @@ public class EditDeveloperProjectController implements Initializable {
 
     @FXML
     private void save(ActionEvent event) {
-        bll.addUsersToProject(inProjectUsers, project.getId());
+        model.addUsersToProject(inProjectUsers, project.getId());
         sm.changeScene(event, "adminNewEditProject");
     }
 
@@ -87,28 +87,39 @@ public class EditDeveloperProjectController implements Initializable {
     public void setProject(Project project) {
         this.project = project;
         lblProjectName.setText(project.getName());
-        
+
         initUsers();
         setViews();
     }
-    
-    private void initUsers(){
-        inProjectUsers = bll.getUsersOnProject(project.getId());
-        ArrayList<User> toFilter = bll.getAllUsers();
-        
-        
-        for (User i : inProjectUsers) {
-            for (User f : toFilter) {
-                if(i.getId() != f.getId()){
-                    freeUsers.add(f);
-                }
-            }
+
+    private void initUsers() {
+        inProjectUsers = model.getUsersOnProject(project.getId());
+        ArrayList<User> toFilter = model.getAllUsers();
+
+        if (inProjectUsers.isEmpty()) {
+            freeUsers = toFilter;
+            return;
         }
-    }
+        
+    freeUsers = toFilter.stream()
+    .filter(two -> inProjectUsers.stream()
+    .noneMatch(one -> one.getId()==two.getId()))
+    .collect(Collectors.toList());
     
-    private void setViews(){
+    }
+
+    private void setViews() {
         tableviewUsers.setItems(FXCollections.observableList(inProjectUsers));
         comboboxUser.setItems(FXCollections.observableList(freeUsers));
         comboboxUser.getSelectionModel().selectFirst();
+    }
+
+    @FXML
+    private void comboboxAction(ActionEvent event) {
+        if (comboboxUser.getSelectionModel().isEmpty()) {
+            comboboxUser.setDisable(true);
+        } else {
+            comboboxUser.setDisable(false);
+        }
     }
 }
